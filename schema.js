@@ -6,6 +6,10 @@ module.exports=buildSchema(`
             email:String!
             password:String!
         }
+        input loginDataType{
+            email:String!
+            password:String!
+        }
         input UserDataType{
             _id:ID
             email:String!
@@ -13,7 +17,7 @@ module.exports=buildSchema(`
             password:String!
         }
         type RootQuery{
-            getUser:User!
+            getUser(loginData:loginDataType):String!
         }
         type RootMutation{
             createUser(UserData:UserDataType):User!

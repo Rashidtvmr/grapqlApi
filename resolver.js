@@ -1,13 +1,24 @@
 // const bcrypt = require('bcryptjs');
 const  User=require('./mongo/user');
 module.exports= {
-    getUser() {
-        return {
-            email: "rashid,pbt@gmail.com",
-            password: "Hello World"
+    getUser:async function({loginData}) {
+        const result=await User.find({email:loginData.email,password:loginData.password})
+        if(result[0].email==loginData.email && result[0].password==loginData.password){
+            return `email: ${result[0].email},password: ${result[0].password}`
         }
+        else{
+            return "Invalid Credential"
+        }
+
     },
     createUser: async function ({UserData}) {
+        const error=[];
+        const alreadyUser=User.find({email:UserData.email});
+        if(alreadyUser){
+            const err=new Error("Email Already Exist");
+            error.push(err);
+            throw err;
+        }
         const user = new User({
             _id:Math.random().toString(),
             name: UserData.name,
@@ -15,7 +26,7 @@ module.exports= {
             password: UserData.password
         });
         const result = await user.save();
-        console.log("result:"+result._doc.uname);
+        console.log("result:"+result._doc.name);
         return {
             _id:result._doc._id,
             name:result._doc.name,

@@ -1,9 +1,11 @@
 const express=require('express');
+const fs=require('fs');
 const graphqlHttp=require('express-graphql');
 const mySchema=require('./schema');
 const myResolve=require('./resolver');
 const app=express();
-app.listen(8080);
+const PORT=process.env.port || 3000;
+app.listen(PORT);
 
 
 app.use('/graphql', graphqlHttp({
@@ -11,7 +13,11 @@ app.use('/graphql', graphqlHttp({
     rootValue: myResolve,
     graphiql: true,
 }));
-app.get('/',(req,res,next)=>{
-    res.send(result);
+// app.get('/',(req,res,next)=>{
+//     res.render('');
+// });
+app.get('/', (req, res) => {
+    fs.readFile(__dirname + '/index.html', 'utf8', (err, text) => {
+        res.send(text);
+    });
 });
-
